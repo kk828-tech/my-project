@@ -1,0 +1,41 @@
+(function(){
+  console.log("Starting custom auto-fill (Rating 3)...");
+
+  const textAnswers = [
+    "クラスメイトとの議論や、実生活に関連した課題が楽しかったです。",
+    "論理的な考え方や、新しい視点での分析方法が身につきました。",
+    "より高度な応用事例についても学んでみたいです。",
+    "アサインメントの期限を守り、内容を深掘りしてリサーチしました。",
+    "特にありません。充実した授業でした。"
+  ];
+
+  // 1. 記述式回答
+  const textInputs = document.querySelectorAll('input[type="text"], textarea');
+  textInputs.forEach((input, index) => {
+    if (textAnswers[index]) {
+      input.value = textAnswers[index];
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  });
+
+  // 2. 選択肢 (6~16問目) を ★3 にする
+  const qContainers = document.querySelectorAll('[data-automation-id="questionItem"]');
+  qContainers.forEach((q, index) => {
+    if (index >= 5 && index <= 15) {
+      // 質問内のラジオボタン（または選択肢行）をすべて取得
+      const options = q.querySelectorAll('input[type="radio"], .office-form-question-choice-row, [role="radio"]');
+      // 3番目（インデックス2）の選択肢があればクリック
+      if (options[2]) {
+        options[2].click();
+      }
+    }
+    // 17問目（複数選択）
+    if (index === 16) {
+      const checks = Array.from(q.querySelectorAll('input[type="checkbox"], [role="checkbox"]'));
+      checks.sort(() => Math.random() - 0.5).slice(0, 3).forEach(c => c.click());
+    }
+  });
+
+  alert("★3評価で入力を試みました！");
+})();
